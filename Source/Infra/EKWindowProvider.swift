@@ -151,20 +151,25 @@ final class EKWindowProvider: EntryPresenterDelegate {
     
     /** Clear all entries immediately and display to the rollback window */
     func displayRollbackWindow() {
+        let isKeyWindow = entryWindow.isKeyWindow
         if #available(iOS 13.0, *) {
             entryWindow.windowScene = nil
         }
         entryWindow = nil
         entryView = nil
+        guard isKeyWindow else {
+            return
+        }
+
         switch rollbackWindow! {
         case .main:
             if let mainRollbackWindow = mainRollbackWindow {
-                mainRollbackWindow.makeKeyAndVisible()
+                mainRollbackWindow.makeKey()
             } else {
-                UIApplication.shared.keyWindow?.makeKeyAndVisible()
+                UIApplication.shared.keyWindow?.makeKey()
             }
         case .custom(window: let window):
-            window.makeKeyAndVisible()
+            window.makeKey()
         }
     }
     
